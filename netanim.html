@@ -18,7 +18,6 @@
                 .edge {
                     stroke: orange;
                     stroke-width: 10;
-                    stroke-opacity: 0.7;
                 }
                 .nodenum {
                     text-align: center;
@@ -41,6 +40,7 @@
             var speed = 100;
             var release_time = 25*(100/speed);
             var node_numbers = 0;
+            var edge_els = [];
             edges.forEach( (e) => {
                 var line_el = document.createElementNS(svg,'line');
                 var x1 = vertices[e.from].x*sx+ox;
@@ -52,7 +52,9 @@
                 line_el.setAttribute("x2",x2);
                 line_el.setAttribute("y2",y2);
                 line_el.setAttribute("class","edge");
+                line_el.setAttribute("stroke-opacity",0);
                 graph_el.appendChild(line_el);
+                edge_els[`${e.from}-${e.to}`] = edge_els[`${e.to}-${e.from}`] = line_el;
             });
             var i = 0;
             vertices.forEach( (v) => {
@@ -77,7 +79,9 @@
                     g_el.appendChild(text_el);
                 }
                 g_el.setAttribute('transform',`translate(${x},${y})`);
+                g_el.setAttribute("opacity",0);
                 v.element = circle_el;
+                v.g_el    = g_el;
                 graph_el.appendChild(g_el);
 
             });
@@ -131,10 +135,54 @@
             vertices.forEach ( (v) => {
                 v.neighbors = v.neighbors.sort( (a,b) => { return a.distance - b.distance });
             });
-            var basetime  =  0;
+            var queue    = [ 3 ];
+            var visited  = [];
+            var showtime = 0;
+            var prev     = 0;
+            var aid      = 0;
+            var vdur     = 0.1;
+            var edur     = 0.1;
+            while (queue.length>0) {
+                var v = queue.shift();
+                if (!visited[v]) {
+                    console.log(`v=${v}`);
+                    var anim_el = document.createElementNS(svg,'animate');
+                    anim_el.setAttribute("attributeName","opacity");
+                    anim_el.setAttribute("from",0);
+                    anim_el.setAttribute("to",1);
+                    anim_el.setAttribute("dur",`${vdur}s`);
+                    anim_el.setAttribute("id",`init${aid}`);
+                    anim_el.setAttribute("begin", aid ? `init${aid-1}.end` : "0s");
+                    anim_el.setAttribute("fill","freeze");
+                    vertices[v].g_el.appendChild(anim_el);
+                    prev = v; aid++;
+                    visited[v] = true;
+                    vertices[v].neighbors
+                        .map( (n) => { return n.to; } )
+                        .sort( (a,b) => { return 0.5 - Math.random() } )
+                        .forEach( (n) => {
+                            queue.push(n);
+                            if (visited[n]) {
+                                var e = `${v}-${n}`;
+                                var edge_el = edge_els[e];
+                                var anim_el = document.createElementNS(svg,'animate');
+                                anim_el.setAttribute("attributeName","stroke-opacity");
+                                anim_el.setAttribute("from",0);
+                                anim_el.setAttribute("to",0.7);
+                                anim_el.setAttribute("dur",`${edur}s`);
+                                anim_el.setAttribute("id",`init${aid}`);
+                                anim_el.setAttribute("begin", `init${aid-1}.end`);
+                                anim_el.setAttribute("fill","freeze");
+                                edge_el.appendChild(anim_el);
+                                aid++;
+                            }
+                        });
+                }
+            }
+            var basetime  =  5;
             var timefactor = 25/speed;
             var particles =  [
-                { color: '#ff1b07', origin:  0, to: 0, time:  basetime +  0*timefactor },
+                { color: '#ff1b07', origin:  0, to: 0, time:  basetime +   0*timefactor },
                 { color: 'yellow',  origin: 26, to: 0, time:  basetime +  65*timefactor },
                 { color: 'red',     origin: 11, to: 0, time:  basetime +  67*timefactor },
                 { color: 'lime',    origin: 33, to: 0, time:  basetime +  69*timefactor },
@@ -158,8 +206,9 @@
                 var set_el = document.createElementNS(svg,'set');
                 set_el.setAttribute("attributeName","fill");
                 set_el.setAttribute("to",p.color);
-                set_el.setAttribute("begin",`${p.time}s`);
+                set_el.setAttribute("begin",`init${aid-1}.end + ${p.time}s`);
                 set_el.setAttribute("dur",`${release_time}`);
+                set_el.setAttribute("id",`p${p.pid}`);
                 vertices[p.origin].element.appendChild(set_el);
                 while (queue.length>0) {
                     queue = queue.sort( (a,b) => { return a.distance - b.distance });
@@ -202,7 +251,7 @@
                         if (level>1) {
                             anim_el.setAttribute("begin",`${id}.end`);
                         } else {
-                            anim_el.setAttribute("begin",`${p.time}s`);
+                            anim_el.setAttribute("begin",`p${p.pid}.begin`);
                         }
                         var mpath_el = document.createElementNS(svg,'mpath');
                         mpath_el.setAttribute("href",`#from${from}to${me}`);
