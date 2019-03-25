@@ -61,15 +61,15 @@
                 var x = v.x*sx+ox;
                 var y = v.y*sy+oy;
                 var r = 30;
-                circle_el.setAttribute("cx",-r/2);
-                circle_el.setAttribute("cy",-r/2);
+                circle_el.setAttribute("cx",0);
+                circle_el.setAttribute("cy",0);
                 circle_el.setAttribute("r",r);
                 circle_el.setAttribute("class","vertex");
                 g_el.appendChild(circle_el);
                 if (node_numbers) {
                     var text_el = document.createElementNS(svg,'text');
-                    text_el.setAttribute("x",-r/2);
-                    text_el.setAttribute("y",-r/2+5);
+                    text_el.setAttribute("x",0);
+                    text_el.setAttribute("y",5);
                     text_el.setAttribute("fill","black");
                     text_el.setAttribute("text-anchor","middle");
                     var text_node  = document.createTextNode(i++);
