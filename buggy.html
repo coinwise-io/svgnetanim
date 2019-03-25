@@ -1,0 +1,260 @@
+<html>
+    <head>
+        <title>Network</title>
+    </head>
+    <body style='background-color: #3c767c; padding: 0; margin: 0;'>
+        <svg viewBox="0 0 3200 1800" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" style="margin: 0; padding: 0;"  preserveAspectRatio="xMinYMax meet">
+            <style>
+                .path {
+                    //stroke: black;
+                    //stroke-width: 1;
+                    stroke: transparent;
+                    fill: transparent;
+                }
+                .vertex {
+                    fill: white;
+                    stroke: black;
+                }
+                .edge {
+                    stroke: orange;
+                    stroke-width: 10;
+                    stroke-opacity: 0.7;
+                }
+                .nodenum {
+                    text-align: center;
+                }
+            }
+            </style>
+            <image href="background.png"/>
+            <g id="graph">
+            </g>
+        </svg>
+        <script>
+            var vertices = [{"y":1.54148,"x":0.429132},{"x":0.978318,"y":3.01524},{"y":0.939511,"x":0.846605},{"x":2.42311,"y":1.44193},{"x":2.14344,"y":0.67814},{"x":3.42239,"y":1.07648},{"x":1.4975,"y":2.6075},{"x":3.94334,"y":0.562532},{"y":0.540126,"x":3.48612},{"y":2.21412,"x":0.483334},{"x":2.00084,"y":1.80045},{"x":1.63905,"y":2.36556},{"x":3.06892,"y":1.02797},{"y":2.65391,"x":3.47131},{"x":1.3919,"y":3.48016},{"x":3.60122,"y":1.84175},{"x":1.81014,"y":1.30899},{"x":1.92148,"y":2.79756},{"y":2.60367,"x":2.8535},{"x":0,"y":0.750453},{"x":1.35464,"y":1.32415},{"y":0.870411,"x":4.21387},{"y":2.43721,"x":3.91514},{"x":2.56076,"y":1.94152},{"x":2.69575,"y":0.816841},{"x":0.875409,"y":1.30027},{"x":2.26468,"y":2.92882},{"y":1.6673,"x":4.06426},{"x":1.65284,"y":0.537159},{"x":3.2733,"y":2.91828},{"x":3.08791,"y":1.60779},{"x":1.36428,"y":2.06345},{"y":1.48565,"x":3.71553},{"y":2.11699,"x":2.91444},{"x":3.59188,"y":0},{"y":0.0731306,"x":2.28572},{"y":0.559156,"x":0.250681},{"y":3.351,"x":2.05718},{"y":0.311708,"x":0.809138},{"x":0.952478,"y":0.615478}];
+            var edges = [{"from":35,"to":12},{"to":37,"from":11},{"to":1,"from":17},{"from":4,"to":16},{"from":4,"to":3},{"from":20,"to":39},{"from":10,"to":25},{"to":29,"from":13},{"to":35,"from":28},{"from":9,"to":25},{"from":32,"to":24},{"from":39,"to":16},{"to":7,"from":34},{"to":16,"from":17},{"from":26,"to":13},{"from":19,"to":0},{"from":30,"to":7},{"from":1,"to":14},{"from":36,"to":39},{"to":21,"from":7},{"to":15,"from":29},{"to":20,"from":10},{"to":29,"from":22},{"from":32,"to":33},{"to":14,"from":37},{"to":0,"from":9},{"to":18,"from":37},{"to":38,"from":0},{"from":27,"to":22},{"to":20,"from":11},{"to":18,"from":30},{"to":32,"from":22},{"from":28,"to":25},{"to":27,"from":8},{"from":30,"to":23},{"from":25,"to":36},{"from":28,"to":24},{"to":11,"from":1},{"from":14,"to":6},{"to":6,"from":33},{"to":27,"from":13},{"to":33,"from":13},{"to":21,"from":34},{"from":15,"to":21},{"to":17,"from":14},{"from":2,"to":31},{"from":8,"to":4},{"to":2,"from":19},{"from":11,"to":3},{"from":36,"to":19},{"to":9,"from":31},{"to":34,"from":8},{"to":26,"from":31},{"from":39,"to":38},{"from":8,"to":7},{"from":36,"to":2},{"from":20,"to":28},{"from":10,"to":30},{"from":26,"to":6},{"from":5,"to":24},{"from":29,"to":17},{"to":16,"from":24},{"from":5,"to":3},{"from":31,"to":23},{"to":22,"from":18},{"to":15,"from":23},{"to":4,"from":2},{"to":9,"from":1},{"to":19,"from":38},{"from":34,"to":35},{"from":18,"to":10},{"from":37,"to":26},{"to":21,"from":32},{"from":0,"to":6},{"from":5,"to":27},{"to":12,"from":5},{"from":12,"to":33},{"to":23,"from":3},{"from":12,"to":15},{"from":35,"to":38}];
+            var graph_el = document.getElementById('graph');
+            var sx  =  350;
+            var sy  = -350;
+            var ox  =   50;
+            var oy  = 1600;
+            var svg = "http://www.w3.org/2000/svg";
+            var speed = 25;
+            var release_time = 25*(100/speed);
+            var node_numbers = 1;
+            edges.forEach( (e) => {
+                var line_el = document.createElementNS(svg,'line');
+                var x1 = vertices[e.from].x*sx+ox;
+                var y1 = vertices[e.from].y*sy+oy;
+                var x2 = vertices[e.to].x*sx+ox;
+                var y2 = vertices[e.to].y*sy+oy;
+                line_el.setAttribute("x1",x1);
+                line_el.setAttribute("y1",y1);
+                line_el.setAttribute("x2",x2);
+                line_el.setAttribute("y2",y2);
+                line_el.setAttribute("class","edge");
+                graph_el.appendChild(line_el);
+            });
+            var i = 0;
+            vertices.forEach( (v) => {
+                var circle_el = document.createElementNS(svg,'circle');
+                var x = v.x*sx+ox;
+                var y = v.y*sy+oy;
+                circle_el.setAttribute("cx",x);
+                circle_el.setAttribute("cy",y);
+                circle_el.setAttribute("r",20);
+                circle_el.setAttribute("class","vertex");
+                v.element = circle_el;
+                if (node_numbers) {
+                    var text_el = document.createElementNS(svg,'text');
+                    text_el.setAttribute("x",x);
+                    text_el.setAttribute("y",y+5);
+                    text_el.setAttribute("fill","black");
+                    text_el.setAttribute("text-anchor","middle");
+                    var text_node  = document.createTextNode(i++);
+                    text_el.appendChild(text_node);
+                }
+                graph_el.appendChild(circle_el);
+                if (node_numbers) graph_el.appendChild(text_el);
+
+            });
+            edges.forEach( (e) => {
+                var path_el = document.createElementNS(svg,'path');
+                var x1 = vertices[e.from].x*sx+ox;
+                var y1 = vertices[e.from].y*sy+oy;
+                var x2 = vertices[e.to].x*sx+ox;
+                var y2 = vertices[e.to].y*sy+oy;
+                var dx = x2 - x1;
+                var dy = y2 - y1;
+                var pl = Math.sqrt(dx*dx+dy*dy);
+                dx /= pl;
+                dy /= pl;
+                var r = 16;
+                var xa = x1 - r*dy;
+                var ya = y1 + r*dx;
+                var xb = xa + r*dx;
+                var yb = ya + r*dy;
+                var xd = x2 - r*dy;
+                var yd = y2 + r*dx;
+                var xc = xd - r*dx;
+                var yc = yd - r*dy;
+                var d = `M ${x1} ${y1} Q ${xa} ${ya} ${xb} ${yb} L ${xc} ${yc} Q ${xd} ${yd} ${x2} ${y2}`;
+                path_el.setAttribute('id',`from${e.from}to${e.to}`);
+                path_el.setAttribute("d",d);
+                path_el.setAttribute("class","path");
+                graph_el.appendChild(path_el);
+                path_el = document.createElementNS(svg,'path');
+                xa = x1 + r*dy;
+                ya = y1 - r*dx;
+                xb = xa + r*dx;
+                yb = ya + r*dy;
+                xd = x2 + r*dy;
+                yd = y2 - r*dx;
+                xc = xd - r*dx;
+                yc = yd - r*dy;
+                d = `M ${x2} ${y2} Q ${xd} ${yd} ${xc} ${yc} L ${xb} ${yb} Q ${xa} ${ya} ${x1} ${y1}`;
+                path_el.setAttribute('id',`from${e.to}to${e.from}`);
+                path_el.setAttribute("d",d);
+                path_el.setAttribute("class","path");
+                graph_el.appendChild(path_el);
+                pl = parseFloat(pl.toFixed(2));
+                if (!vertices[e.from].neighbors)
+                    vertices[e.from].neighbors = [ ];
+                vertices[e.from].neighbors.push({ to: e.to, distance: pl });
+                if (!vertices[e.to].neighbors)
+                    vertices[e.to].neighbors = [ ];
+                vertices[e.to].neighbors.push({ to: e.from, distance: pl });
+            });
+            vertices.forEach ( (v) => {
+                v.neighbors = v.neighbors.sort( (a,b) => { return a.distance - b.distance });
+            });
+            var basetime = 0;
+            var particles =  [
+                { color: 'red',     origin:  0, to: 0, time:  basetime +  0 },
+                { color: 'cyan',    origin: 26, to: 0, time:  basetime + 65 },
+                { color: 'magenta', origin: 11, to: 0, time:  basetime + 67 },
+                { color: 'lime',    origin: 33, to: 0, time:  basetime + 69 },
+                { color: 'blue',    origin: 38, to: 0, time:  basetime + 70 },
+                { color: 'yellow',  origin: 38, to: 0, time:  basetime + 72 },
+            ];
+            var pid   = 0;
+
+            particles.forEach( (p) => {
+                p.pid = ++pid;
+                var queue = [];
+                queue.push( { p: p, prev: p.origin, from: p.origin, id: "pa"+pid, level: 0, distance: 0 } );
+                var set_el = document.createElementNS(svg,'set');
+                set_el.setAttribute("attributeName","fill");
+                set_el.setAttribute("to",p.color);
+                set_el.setAttribute("begin",`${p.time}s`);
+                set_el.setAttribute("dur",`${release_time}`);
+                vertices[p.origin].element.appendChild(set_el);
+                while (queue.length>0) {
+                    queue = queue.sort( (a,b) => { return a.distance - b.distance });
+                    var q     = queue.shift();
+                    var p     = q.p;
+                    var prev  = q.prev;
+                    var from  = q.from;
+                    var id    = q.id;
+                    var level = q.level;
+                    if (level>10) {
+                        console.log("Max depth level exceeded");
+                        return
+                    };
+                    if (!p.visited) p.visited = [];
+                    if (p.visited[from]) {
+                        console.log(`we have visited ${from} before`);
+                    } else {
+                        p.visited[from] = true;
+                        console.log(`at ${from} we have ${vertices[from].neighbors.length}: ${vertices[from].neighbors.map((x)=>{return x.to}).join(",")}`);
+                        vertices[from].neighbors.forEach( (n) => {
+                            var to   = n.to;
+                            if (prev != to) {
+                                var rect_el = document.createElementNS(svg,'rect');
+                                var rect_size = 16;
+                                rect_el.setAttribute("x",-rect_size/2);
+                                rect_el.setAttribute("y",-rect_size/2);
+                                rect_el.setAttribute("width",rect_size);
+                                rect_el.setAttribute("height",rect_size);
+                                rect_el.setAttribute("fill",p.color);
+                                rect_el.setAttribute("stroke","#3c767c");
+                                var g_el = document.createElementNS(svg,'g');
+                                g_el.appendChild(rect_el);
+                                g_el.setAttribute("fill-opacity",0);
+                                var anim_el = document.createElementNS(svg,'animateMotion');
+                                var iid = `${id}_${to}`;
+                                anim_el.setAttribute("id",iid);
+                                anim_el.setAttribute("dur",(n.distance/speed).toFixed(2) + "s");
+                                anim_el.setAttribute("repeatCount",1);
+                                anim_el.setAttribute("rotate","auto");
+                                if (level>0) {
+                                    anim_el.setAttribute("begin",`${id}.end`);
+                                } else {
+                                    anim_el.setAttribute("begin",`${p.time}s`);
+                                }
+                                var mpath_el = document.createElementNS(svg,'mpath');
+                                mpath_el.setAttribute("href",`#from${from}to${to}`);
+                                anim_el.appendChild(mpath_el);
+                                g_el.appendChild(anim_el);
+                                var set_el = document.createElementNS(svg,'set');
+                                set_el.setAttribute("attributeName","fill-opacity");
+                                set_el.setAttribute("to",1);
+                                set_el.setAttribute("begin",`${iid}.begin`);
+                                set_el.setAttribute("end",`${iid}.end`);
+                                g_el.appendChild(set_el);
+                                graph_el.appendChild(g_el);
+                                var dist = q.distance + n.distance;
+                                if (!p.sent_to) p.sent_to = [];
+                                if (p.sent_to[to]>0) {
+                                    if (p.sent_to[to] < dist) {
+                                        console.log(`aaargh, ${from} to ${to} has a smaller value`);
+                                    } else {
+                                        console.log(`sending from ${from} to ${to} with burst`);
+                                        var at_el = document.createElementNS(svg,'animateTransform');
+                                        at_el.setAttribute("attributeName","transform");
+                                        at_el.setAttribute("id",`${iid}_at`);
+                                        at_el.setAttribute("type","scale");
+                                        at_el.setAttribute("from","1 1");
+                                        at_el.setAttribute("to","5 5");
+                                        at_el.setAttribute("begin",`${iid}.end-0.2s`);
+                                        at_el.setAttribute("dur","0.1s");  // pop duration
+                                        rect_el.appendChild(at_el);
+                                        var set_el = document.createElementNS(svg,'set');
+                                        set_el.setAttribute("attributeName","rx");
+                                        set_el.setAttribute("to","50%"); // morph square to circle
+                                        set_el.setAttribute("begin",`${iid}_at.begin`);
+                                        rect_el.appendChild(set_el);
+                                        var anim_el = document.createElementNS(svg,'animate');
+                                        anim_el.setAttribute("attributeName","fill-opacity");
+                                        anim_el.setAttribute("from","1");
+                                        anim_el.setAttribute("to","0");
+                                        anim_el.setAttribute("begin",`${iid}_at.begin`);
+                                        anim_el.setAttribute("dur","0.1s");  // pop duration
+                                        anim_el.setAttribute("fill","freeze");
+                                    }
+                                } else {
+                                    p.sent_to[to] = dist;
+                                    if (release_time>0) {
+                                        console.log(`sending from ${from} to ${to} and setting color to ${p.color}`);
+                                        set_el = document.createElementNS(svg,'set');
+                                        set_el.setAttribute("attributeName","fill");
+                                        set_el.setAttribute("to",p.color);
+                                        set_el.setAttribute("begin",`${iid}.end`);
+                                        set_el.setAttribute("dur",`${release_time}`);
+                                        vertices[to].element.appendChild(set_el);
+                                    } else {
+                                        console.log(`sending from ${from} to ${to} without setting color`);
+                                    }
+                                }
+                                console.log(`[  GO   ]: level=${level}: prev=${prev}, from=${from}, to=${to}, iid='${iid}', dist=${dist}`);
+                                queue.push( { p: p, prev: from , from: to, id: iid, level: level+1 , distance: dist } );
+                            } else {
+                                console.log(`[ QUELL ]: level=${level}: prev=${prev}, from=${from}, to=${to}`);
+                            }
+                        });
+                    }
+                }
+                console.log(vertices[0].neighbors.length);
+            });
+        </script>
+    </body>
+</html>

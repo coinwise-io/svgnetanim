@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <title>Network</title>
+    </head>
+    <body>
+        <svg viewBox="0 0 1000 1000" height="50%" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .paths {
+                    stroke: black;
+                    stroke-width: 1;
+                }
+
+            </style>
+            <filter id="blurMe">
+               <feGaussianBlur in="SourceGraphic" stdDeviation="0">
+                   <animate attributeName="stdDeviation" from="0" to="50" dur="0.2s"/>
+               </feGaussianBlur>
+            </filter>
+            <path id="path1to2" d="M 100,100 L 130,100 L 500,370 L 500,400" class="paths" fill="transparent"/>
+            <path id="path2to3" d="M 500,400 L 525,400 L 610,230 L 600,200" class="paths" fill="transparent"/>
+            <path id="path2to4" d="M 500,400 L 500,425 L 670,600 L 700,600" class="paths" fill="transparent"/>
+            <line x1="100" y1="100" x2="500" y2="400"  stroke="blue" stroke-width="5"/>
+            <line x1="500" y1="400" x2="600" y2="200"  stroke="blue" stroke-width="5"/>
+            <line x1="500" y1="400" x2="700" y2="600"  stroke="blue" stroke-width="5"/>
+            <circle id="node1" cx="100" cy="100" r="20" fill="orange"/>
+            <circle id="node2" cx="500" cy="400" r="20" fill="orange"/>
+            <g transform="translate(600,200)">
+                <circle id="node3" cx="0" cy="0" r="20" fill="orange" >
+                    <animateTransform attributeName="transform"
+                        type="scale"
+                        from="1 1"
+                        to="3 3"
+                        begin="0s"
+                        dur="0.1s"
+                    />
+                </circle>
+                <animate attributeName="fill-opacity" from="1" to="0" dur="0.1s"/>
+            </g>
+            <circle id="node4" cx="700" cy="600" r="20" fill="orange"/>
+            <g fill-opacity="0">
+                <rect x="-10" y="-10" width="20" height="20" fill="red" id="txn1"  >
+                    <animateTransform attributeName="transform" id="xform"
+                        type="scale"
+                        from="1 1"
+                        to="5 5"
+                        begin="tx1a0.end-0.2s"
+                        dur="0.1s"
+                    />
+                    <set attributeName="rx" to="50%" begin="xform.begin"/>
+                    <animate attributeName="fill-opacity" from="1" to="0" begin="xform.begin" dur="0.1s" fill="freeze"/>
+                </rect>
+                <animateMotion dur="2s" repeatCount="1" id="tx1a0">
+                    <mpath href="#path1to2"/>
+                </animateMotion>
+                <set attributeName="fill-opacity" to="1" begin="tx1a0.begin" end="tx1a0.end"/>
+                <!--
+                <animateMotion dur="2s" repeatCount="1" id="tx1a1" begin="tx1a0.end">
+                    <mpath xlink:href="#path2to3"/>
+                </animateMotion>
+                <set attributeName="fill-opacity" to="1" begin="tx1a1.begin" end="tx1a1.end"/>
+                -->
+            </g>
+            <rect x="-10" y="-10" width="20" height="20" fill="red" id="txn1_1" fill-opacity="0" ><!--
+                <animateMotion dur="3s" repeatCount="1" id="tx1_1a1" begin="tx1a0.end">
+                    <mpath xlink:href="#path2to4"/>
+                </animateMotion>
+                <set attributeName="fill-opacity" to="1" begin="tx1_1a1.begin" end="tx1_1a1.end"/>-->
+            </rect>
+            <rect x="-10" y="-10" width="20" height="20" fill="magenta" fill-opacity="0" id="txn2"><!--
+                <animateMotion dur="5s" repeatCount="1" id="tx2a" begin="tx1a.begin + 1s">
+                    <mpath xlink:href="#path1to2"/>
+                </animateMotion>
+                <set attributeName="fill-opacity" to="1" dur="5s" begin="tx2a.begin" end="tx2a.end"/>-->
+            </rect>
+        </svg>
+    </body>
+</html>
