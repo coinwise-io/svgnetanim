@@ -56,25 +56,29 @@
             });
             var i = 0;
             vertices.forEach( (v) => {
+                var g_el = document.createElementNS(svg,'g');
                 var circle_el = document.createElementNS(svg,'circle');
                 var x = v.x*sx+ox;
                 var y = v.y*sy+oy;
-                circle_el.setAttribute("cx",x);
-                circle_el.setAttribute("cy",y);
-                circle_el.setAttribute("r",30);
+                var r = 30;
+                circle_el.setAttribute("cx",-r/2);
+                circle_el.setAttribute("cy",-r/2);
+                circle_el.setAttribute("r",r);
                 circle_el.setAttribute("class","vertex");
-                v.element = circle_el;
+                g_el.appendChild(circle_el);
                 if (node_numbers) {
                     var text_el = document.createElementNS(svg,'text');
-                    text_el.setAttribute("x",x);
-                    text_el.setAttribute("y",y+5);
+                    text_el.setAttribute("x",-r/2);
+                    text_el.setAttribute("y",-r/2+5);
                     text_el.setAttribute("fill","black");
                     text_el.setAttribute("text-anchor","middle");
                     var text_node  = document.createTextNode(i++);
                     text_el.appendChild(text_node);
+                    g_el.appendChild(text_el);
                 }
-                graph_el.appendChild(circle_el);
-                if (node_numbers) graph_el.appendChild(text_el);
+                g_el.setAttribute('transform',`translate(${x},${y})`);
+                v.element = circle_el;
+                graph_el.appendChild(g_el);
 
             });
             edges.forEach( (e) => {
